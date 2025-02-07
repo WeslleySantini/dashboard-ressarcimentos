@@ -1,6 +1,7 @@
 import streamlit as st
 import pandas as pd
 import datetime
+from io import BytesIO
 
 # Configuração do título
 st.title("📊 Dashboard de Ressarcimentos Semanais")
@@ -62,8 +63,26 @@ else:
 
 # Exportar relatório
 st.header("Exportar Relatório Semanal")
-if st.button("Baixar Relatório em Excel"):
-    df_semana.to_csv("ressarcimentos_semanal.csv", index=False)
-    st.success("📥 Relatório gerado! Vá até a pasta e envie para o financeiro.")
+
+def gerar_excel(df):
+    output = BytesIO()
+    with pd.ExcelWriter(output, engine='xlsxwriter') as writer:
+        df.to_excel(writer, index=False, sheet_name='Ressarcimentos')
+        writer.book.close()
+    processed_data = output.getvalue()
+    return processed_data
+
+# Criar nome do arquivo baseado na semana
+nome_arquivo = f"Ressarcimento_Clubes_{inicio_semana.strftime('%d-%m')} a {fim_semana.strftime('%d-%m')}.xlsx"
+
+if not df_semana.empty:
+    st.download_button(
+        label="Baixar Relatório em Excel",
+        data=gerar_excel(df_semana),
+        file_name=nome_arquivo,
+        mime="application/vnd.openxmlformats-officedocument.spreadsheetml.sheet"
+    )
+else:
+    st.warning("Nenhum dado para exportar.")
 
 st.write("⚡ Desenvolvido para a gestão automatizada de ressarcimentos semanais ⚡")
