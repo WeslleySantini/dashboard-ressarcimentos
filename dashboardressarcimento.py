@@ -2,6 +2,7 @@ import streamlit as st
 import pandas as pd
 import datetime
 from io import BytesIO
+import xlsxwriter
 
 # Configuração do título
 st.title("📊 Dashboard de Ressarcimentos Semanais")
