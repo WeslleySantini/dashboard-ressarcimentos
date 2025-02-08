@@ -46,14 +46,14 @@ st.title("📊 Dashboard de Ressarcimentos")
 st.markdown("Gerencie e visualize seus ressarcimentos de forma profissional!")
 
 # Criar inputs para os dados
-data = st.date_input("📅 Data do ressarcimento", value=hoje)
-id_clube = st.text_input("🏠 ID do Clube", value="")
-nome_clube = st.text_input("🏷️ Nome do Clube", value="")
-valor = st.text_input("💰 Valor do Ressarcimento", value="")
-responsavel = st.text_input("👤 Responsável", value="")
+data = st.date_input("**Data do ressarcimento**", value=hoje)
+id_clube = st.text_input("**ID do Clube**", value="")
+nome_clube = st.text_input("**Nome do Clube**", value="")
+valor = st.text_input("**Valor do Ressarcimento**", value="")
+responsavel = st.text_input("**Responsável**", value="")
 
 # Botão para adicionar o ressarcimento
-if st.button("✅ Adicionar Ressarcimento"):
+if st.button("**Adicionar Ressarcimento**"):
     if id_clube and nome_clube and valor and responsavel:
         try:
             valor_float = float(valor.replace("R$", "").replace(",", ".").strip())
@@ -78,7 +78,7 @@ if not st.session_state["ressarcimentos"].empty:
     st.write(f"### 💰 Total de Ressarcimentos: R$ {total_valor:,.2f}")
 
     # Gráfico de valores por clube
-    fig, ax = plt.subplots()
+    fig, ax = plt.subplots(figsize=(5, 3))
     st.session_state["ressarcimentos"].groupby("NOME DO CLUBE")["VALOR"].sum().plot(kind="bar", ax=ax, color="blue")
     ax.set_title("Ressarcimentos por Clube")
     ax.set_ylabel("Valor (R$)")
@@ -88,14 +88,14 @@ if not st.session_state["ressarcimentos"].empty:
 # Botão para excluir um ressarcimento específico
 if not st.session_state["ressarcimentos"].empty:
     excluir_index = st.number_input("Digite o índice do ressarcimento para excluir", min_value=0, max_value=len(st.session_state["ressarcimentos"])-1, step=1)
-    if st.button("🗑️ Excluir Ressarcimento"):
+    if st.button("**Excluir Ressarcimento**"):
         st.session_state["ressarcimentos"] = st.session_state["ressarcimentos"].drop(excluir_index).reset_index(drop=True)
         st.session_state["ressarcimentos"].to_csv(file_path, index=False)
         st.success("Ressarcimento excluído com sucesso!")
         st.rerun()
 
 # Botão para limpar todos os ressarcimentos sem confirmação
-if st.button("🧹 Limpar Todos os Ressarcimentos"):
+if st.button("**Limpar Todos os Ressarcimentos**"):
     st.session_state["ressarcimentos"] = pd.DataFrame(columns=["DATA", "ID CLUBE", "NOME DO CLUBE", "VALOR", "RESPONSÁVEL"])
     if os.path.exists(file_path):
         os.remove(file_path)
