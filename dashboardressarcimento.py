@@ -30,7 +30,7 @@ st.markdown("Gerencie e visualize seus ressarcimentos de forma profissional!")
 data = st.date_input("📅 Data do ressarcimento", value=hoje)
 id_clube = st.text_input("🏠 ID do Clube", value="")
 nome_clube = st.text_input("🏷️ Nome do Clube", value="")
-valor = st.text_input("💰 Valor do Ressarcimento (R$)", value="")
+valor = st.text_input("💰 Valor do Ressarcimento", value="R$ ")
 responsavel = st.text_input("👤 Responsável", value="")
 
 # Botão para adicionar o ressarcimento
