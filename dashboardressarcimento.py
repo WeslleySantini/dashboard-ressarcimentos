@@ -15,10 +15,11 @@ fim_semana = inicio_semana + timedelta(days=6)
 
 # Carregar os dados salvos
 file_path = "dados_ressarcimentos.csv"
-if os.path.exists(file_path):
-    st.session_state["ressarcimentos"] = pd.read_csv(file_path)
-else:
-    st.session_state["ressarcimentos"] = pd.DataFrame(columns=["DATA", "ID CLUBE", "NOME DO CLUBE", "VALOR", "RESPONSÁVEL"])
+if "ressarcimentos" not in st.session_state:
+    if os.path.exists(file_path):
+        st.session_state["ressarcimentos"] = pd.read_csv(file_path)
+    else:
+        st.session_state["ressarcimentos"] = pd.DataFrame(columns=["DATA", "ID CLUBE", "NOME DO CLUBE", "VALOR", "RESPONSÁVEL"])
 
 # Interface do Streamlit
 st.title("📊 Dashboard de Ressarcimentos")
@@ -37,6 +38,7 @@ if st.button("Adicionar Ressarcimento"):
     st.session_state["ressarcimentos"] = pd.concat([st.session_state["ressarcimentos"], novo_dado], ignore_index=True)
     st.session_state["ressarcimentos"].to_csv(file_path, index=False)
     st.success("Ressarcimento adicionado com sucesso!")
+    st.rerun()
 
 # Exibir os ressarcimentos adicionados
 st.write("### 📅 Ressarcimentos cadastrados:")
@@ -49,6 +51,7 @@ if not st.session_state["ressarcimentos"].empty:
         st.session_state["ressarcimentos"] = st.session_state["ressarcimentos"].drop(excluir_index).reset_index(drop=True)
         st.session_state["ressarcimentos"].to_csv(file_path, index=False)
         st.success("Ressarcimento excluído com sucesso!")
+        st.rerun()
 
 # Botão para limpar todos os ressarcimentos
 if st.button("Limpar Todos os Ressarcimentos"):
@@ -56,6 +59,7 @@ if st.button("Limpar Todos os Ressarcimentos"):
     if os.path.exists(file_path):
         os.remove(file_path)
     st.success("Todos os ressarcimentos foram removidos!")
+    st.rerun()
 
 # Botão para baixar a planilha semanal
 if not st.session_state["ressarcimentos"].empty:
