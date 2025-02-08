@@ -22,7 +22,7 @@ if "ressarcimentos" not in st.session_state:
         st.session_state["ressarcimentos"] = pd.DataFrame(columns=["DATA", "ID CLUBE", "NOME DO CLUBE", "VALOR", "RESPONSÁVEL"])
 
 # Interface do Streamlit
-st.image("logo.png", use_column_width=True)
+st.image("logo.png", width=200)
 st.title("📊 Dashboard de Ressarcimentos")
 st.markdown("**Preencha os dados para gerar a planilha de ressarcimentos**")
 
