@@ -101,3 +101,16 @@ if st.button("**Limpar Todos os Ressarcimentos**"):
         os.remove(file_path)
     st.success("Todos os ressarcimentos foram removidos!")
     st.rerun()
+
+# Botão para baixar a planilha semanal
+if not st.session_state["ressarcimentos"].empty:
+    filename = generate_filename(inicio_semana, fim_semana)
+    with open(filename, "wb") as f:
+        st.session_state["ressarcimentos"].to_excel(f, index=False, sheet_name="Ressarcimentos")
+    with open(filename, "rb") as f:
+        st.download_button(
+            label="📥 Baixar Planilha de Ressarcimentos",
+            data=f,
+            file_name=filename,
+            mime="application/vnd.openxmlformats-officedocument.spreadsheetml.sheet"
+        )
