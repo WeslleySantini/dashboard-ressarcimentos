@@ -53,6 +53,11 @@ if st.button("Adicionar Ressarcimento"):
 st.write("### 📅 Ressarcimentos cadastrados:")
 st.dataframe(st.session_state["ressarcimentos"])
 
+# Exibir somatória dos valores cadastrados
+if not st.session_state["ressarcimentos"].empty:
+    total_valor = st.session_state["ressarcimentos"]["VALOR"].sum()
+    st.write(f"### 💰 Total de Ressarcimentos: R$ {total_valor:,.2f}")
+
 # Botão para excluir um ressarcimento específico
 if not st.session_state["ressarcimentos"].empty:
     excluir_index = st.number_input("Digite o índice do ressarcimento para excluir", min_value=0, max_value=len(st.session_state["ressarcimentos"])-1, step=1)
