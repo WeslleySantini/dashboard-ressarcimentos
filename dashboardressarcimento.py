@@ -42,7 +42,7 @@ if st.button("Adicionar Ressarcimento"):
             st.session_state["ressarcimentos"] = pd.concat([st.session_state["ressarcimentos"], novo_dado], ignore_index=True)
             st.session_state["ressarcimentos"].to_csv(file_path, index=False)
             st.success("Ressarcimento adicionado com sucesso!")
-            st.experimental_rerun()
+            st.rerun()
         except ValueError:
             st.error("Por favor, insira um valor válido para o ressarcimento.")
     else:
