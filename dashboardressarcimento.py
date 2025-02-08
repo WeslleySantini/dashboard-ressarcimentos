@@ -42,11 +42,13 @@ if st.button("Adicionar Ressarcimento"):
         st.success("Ressarcimento adicionado com sucesso!")
         
         # Limpar os campos após adicionar
-        st.session_state["data_input"] = hoje
-        st.session_state["id_clube_input"] = ""
-        st.session_state["nome_clube_input"] = ""
-        st.session_state["valor_input"] = ""
-        st.session_state["responsavel_input"] = ""
+        st.session_state.update({
+            "data_input": hoje,
+            "id_clube_input": "",
+            "nome_clube_input": "",
+            "valor_input": "",
+            "responsavel_input": ""
+        })
         
         st.rerun()
     except ValueError:
