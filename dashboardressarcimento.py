@@ -59,7 +59,7 @@ if not st.session_state["ressarcimentos"].empty:
         st.session_state["ressarcimentos"] = st.session_state["ressarcimentos"].drop(excluir_index).reset_index(drop=True)
         st.session_state["ressarcimentos"].to_csv(file_path, index=False)
         st.success("Ressarcimento excluído com sucesso!")
-        st.experimental_rerun()
+        st.rerun()
 
 # Botão para limpar todos os ressarcimentos
 if st.button("Limpar Todos os Ressarcimentos"):
