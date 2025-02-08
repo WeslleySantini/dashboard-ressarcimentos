@@ -21,30 +21,16 @@ if "ressarcimentos" not in st.session_state:
     else:
         st.session_state["ressarcimentos"] = pd.DataFrame(columns=["DATA", "ID CLUBE", "NOME DO CLUBE", "VALOR", "RESPONSÁVEL"])
 
-# Inicializar variáveis no session_state se não existirem
-for key in ["id_clube", "nome_clube", "valor", "responsavel"]:
-    if key not in st.session_state:
-        st.session_state[key] = ""
-
-# Criar função para limpar os inputs
-def reset_inputs():
-    st.session_state.update({
-        "id_clube": "",
-        "nome_clube": "",
-        "valor": "",
-        "responsavel": ""
-    })
-
 # Interface do Streamlit
 st.title("📊 Dashboard de Ressarcimentos")
 st.markdown("**Preencha os dados para gerar a planilha de ressarcimentos**")
 
 # Criar inputs para os dados
-data = st.date_input("Data do ressarcimento", value=hoje, key="data")
-id_clube = st.text_input("ID do Clube", key="id_clube")
-nome_clube = st.text_input("Nome do Clube", key="nome_clube")
-valor = st.text_input("Valor do Ressarcimento (R$)", key="valor")
-responsavel = st.text_input("Responsável", key="responsavel")
+data = st.date_input("Data do ressarcimento", value=hoje)
+id_clube = st.text_input("ID do Clube", value="")
+nome_clube = st.text_input("Nome do Clube", value="")
+valor = st.text_input("Valor do Ressarcimento (R$)", value="")
+responsavel = st.text_input("Responsável", value="")
 
 # Botão para adicionar o ressarcimento
 if st.button("Adicionar Ressarcimento"):
@@ -56,8 +42,7 @@ if st.button("Adicionar Ressarcimento"):
             st.session_state["ressarcimentos"] = pd.concat([st.session_state["ressarcimentos"], novo_dado], ignore_index=True)
             st.session_state["ressarcimentos"].to_csv(file_path, index=False)
             st.success("Ressarcimento adicionado com sucesso!")
-            reset_inputs()
-            st.rerun()
+            st.experimental_rerun()
         except ValueError:
             st.error("Por favor, insira um valor válido para o ressarcimento.")
     else:
@@ -74,7 +59,7 @@ if not st.session_state["ressarcimentos"].empty:
         st.session_state["ressarcimentos"] = st.session_state["ressarcimentos"].drop(excluir_index).reset_index(drop=True)
         st.session_state["ressarcimentos"].to_csv(file_path, index=False)
         st.success("Ressarcimento excluído com sucesso!")
-        st.rerun()
+        st.experimental_rerun()
 
 # Botão para limpar todos os ressarcimentos
 if st.button("Limpar Todos os Ressarcimentos"):
@@ -82,7 +67,7 @@ if st.button("Limpar Todos os Ressarcimentos"):
     if os.path.exists(file_path):
         os.remove(file_path)
     st.success("Todos os ressarcimentos foram removidos!")
-    st.rerun()
+    st.experimental_rerun()
 
 # Botão para baixar a planilha semanal
 if not st.session_state["ressarcimentos"].empty:
