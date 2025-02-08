@@ -10,14 +10,14 @@ st.set_page_config(page_title="Ressarcimento Clubes", page_icon="logo.png")
 # Aplicar estilo nos botões
 st.markdown("""
     <style>
-        div.stButton > button:first-child {
+        div.stButton > button:first-child, .stDownloadButton > button:first-child {
             background-color: #004A82;
             color: white;
             font-weight: bold;
             border-radius: 5px;
             padding: 8px 16px;
         }
-        div.stButton > button:first-child:hover {
+        div.stButton > button:first-child:hover, .stDownloadButton > button:first-child:hover {
             background-color: #003366;
         }
     </style>
@@ -107,33 +107,9 @@ if not st.session_state["ressarcimentos"].empty:
     filename = generate_filename(inicio_semana, fim_semana)
     with pd.ExcelWriter(filename, engine='xlsxwriter') as writer:
         st.session_state["ressarcimentos"].to_excel(writer, index=False, sheet_name="Ressarcimentos")
-        worksheet = writer.sheets["Ressarcimentos"]
-        workbook = writer.book
-        
-        # Aplicando formatação ao cabeçalho
-        header_format = workbook.add_format({
-            "bold": True,
-            "align": "center",
-            "valign": "vcenter",
-            "bg_color": "#92D050",
-            "border": 1
-        })
-        for col_num, value in enumerate(st.session_state["ressarcimentos"].columns.values):
-            worksheet.write(0, col_num, value, header_format)
-        
-        # Ajustando colunas e centralizando texto
-        center_format = workbook.add_format({"align": "center"})
-        currency_format = workbook.add_format({"align": "center", "num_format": "R$ #,##0.00"})
-        worksheet.set_column("A:A", 15, center_format)
-        worksheet.set_column("B:B", 12, center_format)
-        worksheet.set_column("C:C", 25, center_format)
-        worksheet.set_column("D:D", 12, currency_format)
-        worksheet.set_column("E:E", 15, center_format)
-        
-        writer.close()
     with open(filename, "rb") as file:
         st.download_button(
-            label="**Baixar Planilha de Ressarcimentos**""📥 Baixar Planilha de Ressarcimentos",
+            label="**Baixar Planilha de Ressarcimentos**",
             data=file,
             file_name=filename,
             mime="application/vnd.openxmlformats-officedocument.spreadsheetml.sheet"
