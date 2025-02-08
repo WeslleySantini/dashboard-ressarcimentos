@@ -37,6 +37,13 @@ if st.button("Adicionar Ressarcimento"):
 st.write("### 📅 Ressarcimentos cadastrados:")
 st.dataframe(st.session_state["ressarcimentos"])
 
+# Botão para excluir um ressarcimento
+if not st.session_state["ressarcimentos"].empty:
+    excluir_index = st.number_input("Digite o índice do ressarcimento para excluir", min_value=0, max_value=len(st.session_state["ressarcimentos"])-1, step=1)
+    if st.button("Excluir Ressarcimento"):
+        st.session_state["ressarcimentos"] = st.session_state["ressarcimentos"].drop(excluir_index).reset_index(drop=True)
+        st.success("Ressarcimento excluído com sucesso!")
+
 # Botão para baixar a planilha semanal
 if not st.session_state["ressarcimentos"].empty:
     filename = generate_filename(inicio_semana, fim_semana)
