@@ -133,7 +133,7 @@ if not st.session_state["ressarcimentos"].empty:
         writer.close()
     with open(filename, "rb") as file:
         st.download_button(
-            label="📥 Baixar Planilha de Ressarcimentos",
+            label="**Baixar Planilha de Ressarcimentos**""📥 Baixar Planilha de Ressarcimentos",
             data=file,
             file_name=filename,
             mime="application/vnd.openxmlformats-officedocument.spreadsheetml.sheet"
