@@ -21,7 +21,12 @@ if "ressarcimentos" not in st.session_state:
     else:
         st.session_state["ressarcimentos"] = pd.DataFrame(columns=["DATA", "ID CLUBE", "NOME DO CLUBE", "VALOR", "RESPONSÁVEL"])
 
-# Criar variáveis de controle para limpar os inputs
+# Inicializar variáveis no session_state
+for key in ["id_clube", "nome_clube", "valor", "responsavel"]:
+    if key not in st.session_state:
+        st.session_state[key] = ""
+
+# Criar função para limpar os inputs
 def reset_inputs():
     st.session_state["id_clube"] = ""
     st.session_state["nome_clube"] = ""
