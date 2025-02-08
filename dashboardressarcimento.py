@@ -1,7 +1,6 @@
 import pandas as pd
 import streamlit as st
 import matplotlib.pyplot as plt
-import plotly.express as px
 from datetime import datetime, timedelta
 import os
 
@@ -60,8 +59,12 @@ if not st.session_state["ressarcimentos"].empty:
     st.write(f"### 💰 Total de Ressarcimentos: R$ {total_valor:,.2f}")
 
     # Gráfico de valores por clube
-    fig = px.bar(st.session_state["ressarcimentos"], x="NOME DO CLUBE", y="VALOR", title="Ressarcimentos por Clube", text_auto=True)
-    st.plotly_chart(fig)
+    fig, ax = plt.subplots()
+    st.session_state["ressarcimentos"].groupby("NOME DO CLUBE")["VALOR"].sum().plot(kind="bar", ax=ax, color="blue")
+    ax.set_title("Ressarcimentos por Clube")
+    ax.set_ylabel("Valor (R$)")
+    ax.set_xlabel("Nome do Clube")
+    st.pyplot(fig)
 
 # Botão para excluir um ressarcimento específico
 if not st.session_state["ressarcimentos"].empty:
