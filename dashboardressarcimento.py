@@ -30,14 +30,14 @@ st.markdown("Gerencie e visualize seus ressarcimentos de forma profissional!")
 data = st.date_input("📅 Data do ressarcimento", value=hoje)
 id_clube = st.text_input("🏠 ID do Clube", value="")
 nome_clube = st.text_input("🏷️ Nome do Clube", value="")
-valor = st.text_input("💰 Valor do Ressarcimento", value="R$ ")
+valor = st.text_input("💰 Valor do Ressarcimento", value="")
 responsavel = st.text_input("👤 Responsável", value="")
 
 # Botão para adicionar o ressarcimento
 if st.button("✅ Adicionar Ressarcimento"):
     if id_clube and nome_clube and valor and responsavel:
         try:
-            valor_float = float(valor.replace(",", "."))
+            valor_float = float(valor.replace("R$", "").replace(",", ".").strip())
             novo_dado = pd.DataFrame([[data, id_clube, nome_clube, valor_float, responsavel]],
                                      columns=["DATA", "ID CLUBE", "NOME DO CLUBE", "VALOR", "RESPONSÁVEL"])
             st.session_state["ressarcimentos"] = pd.concat([st.session_state["ressarcimentos"], novo_dado], ignore_index=True)
