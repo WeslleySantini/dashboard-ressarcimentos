@@ -4,6 +4,9 @@ import matplotlib.pyplot as plt
 from datetime import datetime, timedelta
 import os
 
+# Definir nome da aba no navegador
+st.set_page_config(page_title="Ressarcimento Clubes", page_icon="🏆")
+
 # Função para gerar o nome do arquivo
 def generate_filename(start_date, end_date):
     return f"ressarcimento_clubes_{start_date.strftime('%d-%m')} a {end_date.strftime('%d-%m')}.xlsx"
