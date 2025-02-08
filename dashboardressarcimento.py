@@ -67,7 +67,7 @@ if st.button("Limpar Todos os Ressarcimentos"):
     if os.path.exists(file_path):
         os.remove(file_path)
     st.success("Todos os ressarcimentos foram removidos!")
-    st.experimental_rerun()
+    st.rerun()
 
 # Botão para baixar a planilha semanal
 if not st.session_state["ressarcimentos"].empty:
