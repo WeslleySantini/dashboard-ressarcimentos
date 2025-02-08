@@ -26,19 +26,31 @@ st.title("📊 Dashboard de Ressarcimentos")
 st.markdown("**Preencha os dados para gerar a planilha de ressarcimentos**")
 
 # Criar inputs para os dados
-data = st.date_input("Data do ressarcimento", value=hoje)
-id_clube = st.text_input("ID do Clube")
-nome_clube = st.text_input("Nome do Clube")
-valor = st.number_input("Valor do Ressarcimento", min_value=0.01, format="%.2f")
-responsavel = st.text_input("Responsável")
+data = st.date_input("Data do ressarcimento", value=hoje, key="data_input")
+id_clube = st.text_input("ID do Clube", key="id_clube_input")
+nome_clube = st.text_input("Nome do Clube", key="nome_clube_input")
+valor = st.text_input("Valor do Ressarcimento (R$)", key="valor_input")
+responsavel = st.text_input("Responsável", key="responsavel_input")
 
 # Botão para adicionar o ressarcimento
 if st.button("Adicionar Ressarcimento"):
-    novo_dado = pd.DataFrame([[data, id_clube, nome_clube, valor, responsavel]], columns=["DATA", "ID CLUBE", "NOME DO CLUBE", "VALOR", "RESPONSÁVEL"])
-    st.session_state["ressarcimentos"] = pd.concat([st.session_state["ressarcimentos"], novo_dado], ignore_index=True)
-    st.session_state["ressarcimentos"].to_csv(file_path, index=False)
-    st.success("Ressarcimento adicionado com sucesso!")
-    st.rerun()
+    try:
+        valor_float = float(valor.replace(",", "."))
+        novo_dado = pd.DataFrame([[data, id_clube, nome_clube, valor_float, responsavel]], columns=["DATA", "ID CLUBE", "NOME DO CLUBE", "VALOR", "RESPONSÁVEL"])
+        st.session_state["ressarcimentos"] = pd.concat([st.session_state["ressarcimentos"], novo_dado], ignore_index=True)
+        st.session_state["ressarcimentos"].to_csv(file_path, index=False)
+        st.success("Ressarcimento adicionado com sucesso!")
+        
+        # Limpar os campos após adicionar
+        st.session_state["data_input"] = hoje
+        st.session_state["id_clube_input"] = ""
+        st.session_state["nome_clube_input"] = ""
+        st.session_state["valor_input"] = ""
+        st.session_state["responsavel_input"] = ""
+        
+        st.rerun()
+    except ValueError:
+        st.error("Por favor, insira um valor válido para o ressarcimento.")
 
 # Exibir os ressarcimentos adicionados
 st.write("### 📅 Ressarcimentos cadastrados:")
