@@ -21,7 +21,7 @@ if "ressarcimentos" not in st.session_state:
     else:
         st.session_state["ressarcimentos"] = pd.DataFrame(columns=["DATA", "ID CLUBE", "NOME DO CLUBE", "VALOR", "RESPONSÁVEL"])
 
-# Inicializar variáveis no session_state
+# Inicializar variáveis no session_state se não existirem
 for key in ["id_clube", "nome_clube", "valor", "responsavel"]:
     if key not in st.session_state:
         st.session_state[key] = ""
@@ -39,10 +39,10 @@ st.markdown("**Preencha os dados para gerar a planilha de ressarcimentos**")
 
 # Criar inputs para os dados
 data = st.date_input("Data do ressarcimento", value=hoje)
-id_clube = st.text_input("ID do Clube", key="id_clube")
-nome_clube = st.text_input("Nome do Clube", key="nome_clube")
-valor = st.text_input("Valor do Ressarcimento (R$)", key="valor")
-responsavel = st.text_input("Responsável", key="responsavel")
+id_clube = st.text_input("ID do Clube", value=st.session_state["id_clube"], key="id_clube")
+nome_clube = st.text_input("Nome do Clube", value=st.session_state["nome_clube"], key="nome_clube")
+valor = st.text_input("Valor do Ressarcimento (R$)", value=st.session_state["valor"], key="valor")
+responsavel = st.text_input("Responsável", value=st.session_state["responsavel"], key="responsavel")
 
 # Botão para adicionar o ressarcimento
 if st.button("Adicionar Ressarcimento"):
