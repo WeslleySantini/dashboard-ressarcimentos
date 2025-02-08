@@ -77,13 +77,7 @@ if not st.session_state["ressarcimentos"].empty:
     total_valor = st.session_state["ressarcimentos"]["VALOR"].sum()
     st.write(f"### 💰 Total de Ressarcimentos: R$ {total_valor:,.2f}")
 
-    # Gráfico de valores por clube
-    fig, ax = plt.subplots(figsize=(5, 3))
-    st.session_state["ressarcimentos"].groupby("NOME DO CLUBE")["VALOR"].sum().plot(kind="bar", ax=ax, color="blue")
-    ax.set_title("Ressarcimentos por Clube")
-    ax.set_ylabel("Valor (R$)")
-    ax.set_xlabel("Nome do Clube")
-    st.pyplot(fig)
+    
 
 # Botão para excluir um ressarcimento específico
 if not st.session_state["ressarcimentos"].empty:
