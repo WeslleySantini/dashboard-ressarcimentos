@@ -36,7 +36,7 @@ st.title("📊 Dashboard de Ressarcimentos")
 st.markdown("**Preencha os dados para gerar a planilha de ressarcimentos**")
 
 # Criar inputs para os dados
-data = st.date_input("Data do ressarcimento", value=hoje)
+data = st.date_input("Data do ressarcimento", value=hoje, key="data")
 id_clube = st.text_input("ID do Clube", key="id_clube")
 nome_clube = st.text_input("Nome do Clube", key="nome_clube")
 valor = st.text_input("Valor do Ressarcimento (R$)", key="valor")
@@ -44,18 +44,20 @@ responsavel = st.text_input("Responsável", key="responsavel")
 
 # Botão para adicionar o ressarcimento
 if st.button("Adicionar Ressarcimento"):
-    try:
-        valor_float = float(st.session_state["valor"].replace(",", "."))
-        novo_dado = pd.DataFrame([[data, st.session_state["id_clube"], st.session_state["nome_clube"], valor_float, st.session_state["responsavel"]]],
-                                 columns=["DATA", "ID CLUBE", "NOME DO CLUBE", "VALOR", "RESPONSÁVEL"])
-        st.session_state["ressarcimentos"] = pd.concat([st.session_state["ressarcimentos"], novo_dado], ignore_index=True)
-        st.session_state["ressarcimentos"].to_csv(file_path, index=False)
-        st.success("Ressarcimento adicionado com sucesso!")
-        
-        reset_inputs()
-        st.experimental_rerun()
-    except ValueError:
-        st.error("Por favor, insira um valor válido para o ressarcimento.")
+    if id_clube and nome_clube and valor and responsavel:
+        try:
+            valor_float = float(valor.replace(",", "."))
+            novo_dado = pd.DataFrame([[data, id_clube, nome_clube, valor_float, responsavel]],
+                                     columns=["DATA", "ID CLUBE", "NOME DO CLUBE", "VALOR", "RESPONSÁVEL"])
+            st.session_state["ressarcimentos"] = pd.concat([st.session_state["ressarcimentos"], novo_dado], ignore_index=True)
+            st.session_state["ressarcimentos"].to_csv(file_path, index=False)
+            st.success("Ressarcimento adicionado com sucesso!")
+            reset_inputs()
+            st.experimental_rerun()
+        except ValueError:
+            st.error("Por favor, insira um valor válido para o ressarcimento.")
+    else:
+        st.error("Todos os campos devem ser preenchidos.")
 
 # Exibir os ressarcimentos adicionados
 st.write("### 📅 Ressarcimentos cadastrados:")
@@ -81,7 +83,6 @@ if st.button("Limpar Todos os Ressarcimentos"):
 # Botão para baixar a planilha semanal
 if not st.session_state["ressarcimentos"].empty:
     filename = generate_filename(inicio_semana, fim_semana)
-    
     with pd.ExcelWriter(filename, engine='xlsxwriter') as writer:
         st.session_state["ressarcimentos"].to_excel(writer, index=False, sheet_name="Ressarcimentos")
         worksheet = writer.sheets["Ressarcimentos"]
@@ -110,7 +111,6 @@ if not st.session_state["ressarcimentos"].empty:
         worksheet.set_column("D:D", 12, currency_format)
         
         writer.close()
-    
     with open(filename, "rb") as file:
         st.download_button(
             label="📥 Baixar planilha de ressarcimentos",
