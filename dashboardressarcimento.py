@@ -42,8 +42,9 @@ if not st.session_state["ressarcimentos"].empty:
     filename = generate_filename(inicio_semana, fim_semana)
     
     with pd.ExcelWriter(filename, engine='xlsxwriter') as writer:
-        workbook = writer.book
+        st.session_state["ressarcimentos"].to_excel(writer, index=False, sheet_name="Ressarcimentos")
         worksheet = writer.sheets["Ressarcimentos"]
+        workbook = writer.book
         
         # Aplicando formatação ao cabeçalho
         header_format = workbook.add_format({
@@ -67,7 +68,6 @@ if not st.session_state["ressarcimentos"].empty:
         currency_format = workbook.add_format({"num_format": "R$ #,##0.00"})
         worksheet.set_column("D:D", 12, currency_format)
         
-        st.session_state["ressarcimentos"].to_excel(writer, index=False, sheet_name="Ressarcimentos")
         writer.close()
     
     with open(filename, "rb") as file:
