@@ -28,8 +28,12 @@ for key in ["id_clube", "nome_clube", "valor", "responsavel"]:
 
 # Criar função para limpar os inputs
 def reset_inputs():
-    for key in ["id_clube", "nome_clube", "valor", "responsavel"]:
-        st.session_state[key] = ""
+    st.session_state.update({
+        "id_clube": "",
+        "nome_clube": "",
+        "valor": "",
+        "responsavel": ""
+    })
 
 # Interface do Streamlit
 st.title("📊 Dashboard de Ressarcimentos")
@@ -53,7 +57,7 @@ if st.button("Adicionar Ressarcimento"):
             st.session_state["ressarcimentos"].to_csv(file_path, index=False)
             st.success("Ressarcimento adicionado com sucesso!")
             reset_inputs()
-            st.experimental_rerun()
+            st.rerun()
         except ValueError:
             st.error("Por favor, insira um valor válido para o ressarcimento.")
     else:
@@ -70,7 +74,7 @@ if not st.session_state["ressarcimentos"].empty:
         st.session_state["ressarcimentos"] = st.session_state["ressarcimentos"].drop(excluir_index).reset_index(drop=True)
         st.session_state["ressarcimentos"].to_csv(file_path, index=False)
         st.success("Ressarcimento excluído com sucesso!")
-        st.experimental_rerun()
+        st.rerun()
 
 # Botão para limpar todos os ressarcimentos
 if st.button("Limpar Todos os Ressarcimentos"):
@@ -78,7 +82,7 @@ if st.button("Limpar Todos os Ressarcimentos"):
     if os.path.exists(file_path):
         os.remove(file_path)
     st.success("Todos os ressarcimentos foram removidos!")
-    st.experimental_rerun()
+    st.rerun()
 
 # Botão para baixar a planilha semanal
 if not st.session_state["ressarcimentos"].empty:
