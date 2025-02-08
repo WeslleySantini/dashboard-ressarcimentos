@@ -42,6 +42,31 @@ if not st.session_state["ressarcimentos"].empty:
     filename = generate_filename(inicio_semana, fim_semana)
     
     with pd.ExcelWriter(filename, engine='xlsxwriter') as writer:
+        workbook = writer.book
+        worksheet = writer.sheets["Ressarcimentos"]
+        
+        # Aplicando formatação ao cabeçalho
+        header_format = workbook.add_format({
+            "bold": True,
+            "align": "center",
+            "valign": "vcenter",
+            "bg_color": "#92D050",
+            "border": 1
+        })
+        for col_num, value in enumerate(st.session_state["ressarcimentos"].columns.values):
+            worksheet.write(0, col_num, value, header_format)
+        
+        # Ajustando colunas
+        worksheet.set_column("A:A", 15)
+        worksheet.set_column("B:B", 12)
+        worksheet.set_column("C:C", 25)
+        worksheet.set_column("D:D", 12)
+        worksheet.set_column("E:E", 15)
+        
+        # Aplicando formatação de moeda
+        currency_format = workbook.add_format({"num_format": "R$ #,##0.00"})
+        worksheet.set_column("D:D", 12, currency_format)
+        
         st.session_state["ressarcimentos"].to_excel(writer, index=False, sheet_name="Ressarcimentos")
         writer.close()
     
