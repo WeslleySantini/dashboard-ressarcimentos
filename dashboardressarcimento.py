@@ -21,16 +21,19 @@ if "ressarcimentos" not in st.session_state:
     else:
         st.session_state["ressarcimentos"] = pd.DataFrame(columns=["DATA", "ID CLUBE", "NOME DO CLUBE", "VALOR", "RESPONSÁVEL"])
 
+if "temp_inputs" not in st.session_state:
+    st.session_state["temp_inputs"] = {"data": hoje, "id_clube": "", "nome_clube": "", "valor": "", "responsavel": ""}
+
 # Interface do Streamlit
 st.title("📊 Dashboard de Ressarcimentos")
 st.markdown("**Preencha os dados para gerar a planilha de ressarcimentos**")
 
 # Criar inputs para os dados
-data = st.date_input("Data do ressarcimento", value=hoje, key="data_input")
-id_clube = st.text_input("ID do Clube", key="id_clube_input")
-nome_clube = st.text_input("Nome do Clube", key="nome_clube_input")
-valor = st.text_input("Valor do Ressarcimento (R$)", key="valor_input")
-responsavel = st.text_input("Responsável", key="responsavel_input")
+data = st.date_input("Data do ressarcimento", value=st.session_state["temp_inputs"]["data"])
+id_clube = st.text_input("ID do Clube", value=st.session_state["temp_inputs"]["id_clube"])
+nome_clube = st.text_input("Nome do Clube", value=st.session_state["temp_inputs"]["nome_clube"])
+valor = st.text_input("Valor do Ressarcimento (R$)", value=st.session_state["temp_inputs"]["valor"])
+responsavel = st.text_input("Responsável", value=st.session_state["temp_inputs"]["responsavel"])
 
 # Botão para adicionar o ressarcimento
 if st.button("Adicionar Ressarcimento"):
@@ -42,13 +45,7 @@ if st.button("Adicionar Ressarcimento"):
         st.success("Ressarcimento adicionado com sucesso!")
         
         # Limpar os campos após adicionar
-        st.session_state.update({
-            "data_input": hoje,
-            "id_clube_input": "",
-            "nome_clube_input": "",
-            "valor_input": "",
-            "responsavel_input": ""
-        })
+        st.session_state["temp_inputs"] = {"data": hoje, "id_clube": "", "nome_clube": "", "valor": "", "responsavel": ""}
         
         st.rerun()
     except ValueError:
