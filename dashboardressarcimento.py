@@ -95,11 +95,13 @@ if not st.session_state["ressarcimentos"].empty:
             worksheet.write(0, col_num, value, header_format)
         
         # Ajustando colunas e centralizando texto
-        worksheet.set_column("A:A", 15)
-        worksheet.set_column("B:B", 12)
-        worksheet.set_column("C:C", 25, workbook.add_format({"align": "center"}))
-        worksheet.set_column("D:D", 12, workbook.add_format({"align": "center", "num_format": "R$ #,##0.00"}))
-        worksheet.set_column("E:E", 15)
+        center_format = workbook.add_format({"align": "center"})
+        currency_format = workbook.add_format({"align": "center", "num_format": "R$ #,##0.00"})
+        worksheet.set_column("A:A", 15, center_format)
+        worksheet.set_column("B:B", 12, center_format)
+        worksheet.set_column("C:C", 25, center_format)
+        worksheet.set_column("D:D", 12, currency_format)
+        worksheet.set_column("E:E", 15, center_format)
         
         writer.close()
     with open(filename, "rb") as file:
