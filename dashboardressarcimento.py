@@ -70,7 +70,8 @@ if not st.session_state["ressarcimentos"].empty:
 if not st.session_state["ressarcimentos"].empty:
     excluir_index = st.number_input("Digite o índice do ressarcimento para excluir", min_value=0, max_value=len(st.session_state["ressarcimentos"])-1, step=1)
     if st.button("🗑️ Excluir Ressarcimento"):
-        if st.confirm("Tem certeza que deseja excluir este ressarcimento?"):
+        st.warning("Tem certeza que deseja excluir este ressarcimento?")
+        if st.button("⚠️ Confirmar Exclusão"):
             st.session_state["ressarcimentos"] = st.session_state["ressarcimentos"].drop(excluir_index).reset_index(drop=True)
             st.session_state["ressarcimentos"].to_csv(file_path, index=False)
             st.success("Ressarcimento excluído com sucesso!")
@@ -78,7 +79,8 @@ if not st.session_state["ressarcimentos"].empty:
 
 # Botão para limpar todos os ressarcimentos
 if st.button("🧹 Limpar Todos os Ressarcimentos"):
-    if st.confirm("Tem certeza que deseja remover todos os ressarcimentos?"):
+    st.warning("Tem certeza que deseja remover todos os ressarcimentos?")
+    if st.button("⚠️ Confirmar Limpeza"):
         st.session_state["ressarcimentos"] = pd.DataFrame(columns=["DATA", "ID CLUBE", "NOME DO CLUBE", "VALOR", "RESPONSÁVEL"])
         if os.path.exists(file_path):
             os.remove(file_path)
