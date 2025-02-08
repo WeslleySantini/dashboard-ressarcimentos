@@ -5,7 +5,7 @@ from datetime import datetime, timedelta
 import os
 
 # Definir nome da aba no navegador
-st.set_page_config(page_title="Ressarcimento Clubes", page_icon="🏆")
+st.set_page_config(page_title="Ressarcimento Clubes", page_icon="logo.png")
 
 # Função para gerar o nome do arquivo
 def generate_filename(start_date, end_date):
