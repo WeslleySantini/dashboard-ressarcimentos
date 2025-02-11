@@ -13,17 +13,21 @@ file_path = "dados_ressarcimentos.csv"
 
 # Função para carregar os dados do Google Drive
 def carregar_dados():
-    try:
-        gdown.download(f"https://drive.google.com/uc?id={file_id}", file_path, quiet=False)
+    url = f"https://drive.google.com/uc?id={file_id}"
+    response = requests.get(url)
+    
+    if response.status_code == 200:
+        with open(file_path, 'wb') as file:
+            file.write(response.content)
         return pd.read_csv(file_path)
-    except Exception as e:
-        st.error(f"Erro ao carregar dados do Google Drive: {e}")
+    else:
+        st.error(f"Erro ao carregar dados do Google Drive: {response.status_code}")
         return pd.DataFrame(columns=["DATA", "ID CLUBE", "NOME DO CLUBE", "VALOR", "RESPONSÁVEL"])
 
 # Função para salvar os dados no Google Drive
 def salvar_dados(df):
     df.to_csv(file_path, index=False)
-    os.system(f"gdown --id {file_id} -O {file_path}")
+    st.warning("Salvamento automático no Google Drive ainda não está implementado completamente.")
 
 # Inicializar os dados na sessão do Streamlit
 if "ressarcimentos" not in st.session_state:
