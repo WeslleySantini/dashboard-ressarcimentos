@@ -1,9 +1,7 @@
 import pandas as pd
 import streamlit as st
 import matplotlib.pyplot as plt
-import gdown
 from datetime import datetime, timedelta
-import os
 
 # Definir nome da aba no navegador
 st.set_page_config(page_title="Ressarcimento Clubes", page_icon="logo.png")
@@ -33,13 +31,9 @@ hoje = datetime.today()
 inicio_semana = hoje - timedelta(days=hoje.weekday() + 1)
 fim_semana = inicio_semana + timedelta(days=6)
 
-# Carregar os dados salvos
-file_path = "dados_ressarcimentos.csv"
+# Inicializar sessão de dados
 if "ressarcimentos" not in st.session_state:
-    if os.path.exists(file_path):
-        st.session_state["ressarcimentos"] = pd.read_csv(file_path)
-    else:
-        st.session_state["ressarcimentos"] = pd.DataFrame(columns=["DATA", "ID CLUBE", "NOME DO CLUBE", "VALOR", "RESPONSÁVEL"])
+    st.session_state["ressarcimentos"] = pd.DataFrame(columns=["DATA", "ID CLUBE", "NOME DO CLUBE", "VALOR", "RESPONSÁVEL"])
 
 # Interface do Streamlit
 st.image("logo.png", width=200)
@@ -61,7 +55,6 @@ if st.button("**Adicionar Ressarcimento**"):
             novo_dado = pd.DataFrame([[data, id_clube, nome_clube, valor_float, responsavel]],
                                      columns=["DATA", "ID CLUBE", "NOME DO CLUBE", "VALOR", "RESPONSÁVEL"])
             st.session_state["ressarcimentos"] = pd.concat([st.session_state["ressarcimentos"], novo_dado], ignore_index=True)
-            st.session_state["ressarcimentos"].to_csv(file_path, index=False)
             st.success("Ressarcimento adicionado com sucesso!")
             st.rerun()
         except ValueError:
@@ -78,22 +71,17 @@ if not st.session_state["ressarcimentos"].empty:
     total_valor = st.session_state["ressarcimentos"]["VALOR"].sum()
     st.write(f"### 💰 Total de Ressarcimentos: R$ {total_valor:,.2f}")
 
-    
-
 # Botão para excluir um ressarcimento específico
 if not st.session_state["ressarcimentos"].empty:
     excluir_index = st.number_input("Digite o índice do ressarcimento para excluir", min_value=0, max_value=len(st.session_state["ressarcimentos"])-1, step=1)
     if st.button("**Excluir Ressarcimento**"):
         st.session_state["ressarcimentos"] = st.session_state["ressarcimentos"].drop(excluir_index).reset_index(drop=True)
-        st.session_state["ressarcimentos"].to_csv(file_path, index=False)
         st.success("Ressarcimento excluído com sucesso!")
         st.rerun()
 
 # Botão para limpar todos os ressarcimentos sem confirmação
 if st.button("**Limpar Todos os Ressarcimentos**"):
     st.session_state["ressarcimentos"] = pd.DataFrame(columns=["DATA", "ID CLUBE", "NOME DO CLUBE", "VALOR", "RESPONSÁVEL"])
-    if os.path.exists(file_path):
-        os.remove(file_path)
     st.success("Todos os ressarcimentos foram removidos!")
     st.rerun()
 
@@ -120,8 +108,6 @@ if not st.session_state["ressarcimentos"].empty:
         center_format = workbook.add_format({"align": "center"})
         currency_format = workbook.add_format({"align": "center", "num_format": "R$ #,##0.00"})
         worksheet.set_column("A:A", 15, center_format)
-        for row_num in range(1, len(st.session_state["ressarcimentos"]) + 1):
-            worksheet.write(row_num, 0, st.session_state["ressarcimentos"].iloc[row_num - 1, 0], center_format)
         worksheet.set_column("B:B", 12, center_format)
         worksheet.set_column("C:C", 25, center_format)
         worksheet.set_column("D:D", 12, currency_format)
