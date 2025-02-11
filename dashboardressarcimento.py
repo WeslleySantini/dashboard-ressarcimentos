@@ -11,15 +11,25 @@ st.set_page_config(page_title="Ressarcimento Clubes", page_icon="logo.png")
 file_id = "1dlOAiRINDsDjF30uxCaHnU1bE-kge92K"
 file_path = "dados_ressarcimentos.csv"
 
+# Colunas esperadas na tabela
+colunas_esperadas = ["DATA", "ID CLUBE", "NOME DO CLUBE", "VALOR", "RESPONSÁVEL"]
+
 # Função para carregar os dados do Google Drive
 def carregar_dados():
     url = f"https://drive.google.com/uc?id={file_id}"
     try:
         urllib.request.urlretrieve(url, file_path)
-        return pd.read_csv(file_path, sep=",", encoding="utf-8", on_bad_lines="warn")
+        df = pd.read_csv(file_path, sep=",", encoding="utf-8", on_bad_lines="warn")
+
+        # Verificar se todas as colunas existem, senão criar um DataFrame vazio corretamente formatado
+        if not set(colunas_esperadas).issubset(df.columns):
+            st.warning("O arquivo CSV estava corrompido. Criando um novo arquivo corretamente formatado.")
+            df = pd.DataFrame(columns=colunas_esperadas)
+
+        return df
     except Exception as e:
         st.error(f"Erro ao carregar dados do Google Drive: {e}")
-        return pd.DataFrame(columns=["DATA", "ID CLUBE", "NOME DO CLUBE", "VALOR", "RESPONSÁVEL"])
+        return pd.DataFrame(columns=colunas_esperadas)
 
 # Função para salvar os dados no Google Drive
 def salvar_dados(df):
@@ -48,7 +58,7 @@ if st.button("**Adicionar Ressarcimento**"):
         try:
             valor_float = float(valor.replace("R$", "").replace(",", ".").strip())
             novo_dado = pd.DataFrame([[data, id_clube, nome_clube, valor_float, responsavel]], 
-                                     columns=["DATA", "ID CLUBE", "NOME DO CLUBE", "VALOR", "RESPONSÁVEL"])
+                                     columns=colunas_esperadas)
             st.session_state["ressarcimentos"] = pd.concat([st.session_state["ressarcimentos"], novo_dado], ignore_index=True)
             salvar_dados(st.session_state["ressarcimentos"])
             st.success("Ressarcimento adicionado com sucesso!")
@@ -62,10 +72,12 @@ if st.button("**Adicionar Ressarcimento**"):
 st.write("### 📋 Lista de Ressarcimentos")
 st.dataframe(st.session_state["ressarcimentos"])
 
-# Exibir somatória dos valores cadastrados
-if not st.session_state["ressarcimentos"].empty:
+# Exibir somatória dos valores cadastrados, verificando se a coluna "VALOR" existe
+if not st.session_state["ressarcimentos"].empty and "VALOR" in st.session_state["ressarcimentos"].columns:
     total_valor = st.session_state["ressarcimentos"]["VALOR"].sum()
     st.write(f"### 💰 Total de Ressarcimentos: R$ {total_valor:,.2f}")
+else:
+    st.write("### 💰 Total de Ressarcimentos: R$ 0,00")
 
 # Botão para excluir um ressarcimento específico
 if not st.session_state["ressarcimentos"].empty:
