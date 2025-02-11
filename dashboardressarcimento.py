@@ -1,6 +1,6 @@
 import pandas as pd
 import streamlit as st
-import gdown
+import requests
 import os
 from datetime import datetime, timedelta
 
