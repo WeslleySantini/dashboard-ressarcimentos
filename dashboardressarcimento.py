@@ -16,7 +16,7 @@ def carregar_dados():
     url = f"https://drive.google.com/uc?id={file_id}"
     try:
         urllib.request.urlretrieve(url, file_path)
-        return pd.read_csv(file_path)
+        return pd.read_csv(file_path, sep=",", encoding="utf-8", on_bad_lines="warn")
     except Exception as e:
         st.error(f"Erro ao carregar dados do Google Drive: {e}")
         return pd.DataFrame(columns=["DATA", "ID CLUBE", "NOME DO CLUBE", "VALOR", "RESPONSÁVEL"])
