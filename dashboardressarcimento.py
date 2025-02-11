@@ -92,27 +92,6 @@ if not st.session_state["ressarcimentos"].empty:
         st.session_state["ressarcimentos"].to_excel(writer, index=False, sheet_name="Ressarcimentos")
         worksheet = writer.sheets["Ressarcimentos"]
         workbook = writer.book
-        
-        # Aplicando formatação ao cabeçalho
-        header_format = workbook.add_format({
-            "bold": True,
-            "align": "center",
-            "valign": "vcenter",
-            "bg_color": "#92D050",
-            "border": 1
-        })
-        for col_num, value in enumerate(st.session_state["ressarcimentos"].columns.values):
-            worksheet.write(0, col_num, value, header_format)
-        
-        # Ajustando colunas e centralizando texto
-        center_format = workbook.add_format({"align": "center"})
-        currency_format = workbook.add_format({"align": "center", "num_format": "R$ #,##0.00"})
-        worksheet.set_column("A:A", 15, center_format)
-        worksheet.set_column("B:B", 12, center_format)
-        worksheet.set_column("C:C", 25, center_format)
-        worksheet.set_column("D:D", 12, currency_format)
-        worksheet.set_column("E:E", 15, center_format)
-        
         writer.close()
     with open(filename, "rb") as file:
         st.download_button(
