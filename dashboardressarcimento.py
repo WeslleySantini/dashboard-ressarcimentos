@@ -1,6 +1,6 @@
 import pandas as pd
 import streamlit as st
-import requests
+import urllib.request
 import os
 from datetime import datetime, timedelta
 
@@ -14,14 +14,11 @@ file_path = "dados_ressarcimentos.csv"
 # Função para carregar os dados do Google Drive
 def carregar_dados():
     url = f"https://drive.google.com/uc?id={file_id}"
-    response = requests.get(url)
-    
-    if response.status_code == 200:
-        with open(file_path, 'wb') as file:
-            file.write(response.content)
+    try:
+        urllib.request.urlretrieve(url, file_path)
         return pd.read_csv(file_path)
-    else:
-        st.error(f"Erro ao carregar dados do Google Drive: {response.status_code}")
+    except Exception as e:
+        st.error(f"Erro ao carregar dados do Google Drive: {e}")
         return pd.DataFrame(columns=["DATA", "ID CLUBE", "NOME DO CLUBE", "VALOR", "RESPONSÁVEL"])
 
 # Função para salvar os dados no Google Drive
